@@ -1,0 +1,8 @@
+# Ignora la cartella dei log e docs
+logs/
+docs/ 
+
+# Ignora eventuali file di log sparsi o file non desiderati
+*.log
+*.bak
+.DS_Store

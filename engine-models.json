@@ -1,0 +1,171 @@
+[ 
+  {
+    "model_id": "gemma4-2B",
+    "display_name": "Gemma4-2B-Q4_K_M",
+    "search_term": "Gemma4-2B",
+    "family": "gemma",
+    "base_ctx": 8192,
+    "file_name": "gemma-4-E2B-it-Q4_K_M.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "gemma4-2B"
+      },
+      "llama": {
+        "extra_params": {
+          "--reasoning": "off"
+        }
+      }
+    }
+  },
+  {
+    "model_id": "gemma4-4B",
+    "display_name": "Gemma4-4B-Q4_K_M",
+    "search_term": "Gemma4-4B",
+    "family": "gemma",
+    "base_ctx": 8192,
+    "file_name": "gemma-4-E4B-it-Q8_0.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "gemma4-4B"
+      },
+      "llama": {
+        "extra_params": {
+          "--reasoning": "off",
+          "-ub": "1024",
+          "-b": "2048"
+        }
+      }
+    }
+  },
+  {
+    "model_id": "llama-3.1-8b-instruct",
+    "display_name": "Meta Llama 3.1 8B",
+    "search_term": "Meta-Llama-3.1-8B-Instruct",
+    "family": "llama",
+    "base_ctx": 4096,
+    "file_name": "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "llama-3.1-8b"
+      },
+      "llama": {
+        "extra_params": {
+          "-ctk": "q8_0",
+          "-ctv": "q8_0"
+        }
+      }
+    }
+  },
+  {
+    "model_id": "mistral-small-24b",
+    "display_name": "Mistral Small 3.1 24B",
+    "search_term": "Mistral-Small-3.1-24B-Instruct",
+    "family": "mistral",
+    "base_ctx": 4096,
+    "file_name": "mistralai_Mistral-Small-3.1-24B-Instruct-2503-Q4_K_S.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "mistral-small"
+      },
+      "llama": {
+        "extra_params": {
+          "-ctk": "q8_0",
+          "-ctv": "q8_0"
+        }
+      }
+    }
+  },
+  {
+    "model_id": "qwen-2.5-14b-instruct",
+    "display_name": "Qwen 2.5 14B",
+    "search_term": "Qwen2.5-14B-Instruct",
+    "family": "qwen",
+    "base_ctx": 4096,
+    "file_name": "Qwen2.5-14B-Instruct-Q5_K_S.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "qwen-2.5-14b"
+      },
+      "llama": {
+        "draft_pattern": "Qwen2.5-0.5B-Instruct",
+        "draft_tokens": 5,
+        "extra_params": {
+          "-ctk": "q8_0",
+          "-ctv": "q8_0"
+        }
+      }
+    }
+  },
+  {
+    "model_id": "qwen-3.5-9B",
+    "display_name": "Qwen-3.5-9B-Q4_K_M",
+    "search_term": "Qwen-3.5-9B",
+    "family": "qwen",
+    "base_ctx": 4096,
+    "file_name": "Qwen_Qwen3.5-9B-Q4_K_M.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "native",
+        "native_tag": "qwen3.5:9b",
+        "ollama_name": "qwen-3.5-9b"
+      }
+    }
+  },
+  {
+    "model_id": "phi-3-medium",
+    "display_name": "Phi-3 Medium 4k",
+    "search_term": "Phi-3-medium-4k-instruct",
+    "family": "phi",
+    "base_ctx": 4096,
+    "file_name": "Phi-3-medium-4k-instruct-Q4_K_S.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "phi-3-medium"
+      },
+      "llama": {
+        "extra_params": {}
+      }
+    }
+  },
+  {
+    "model_id": "phi-3-mini",
+    "display_name": "Phi-3 Mini 4k",
+    "search_term": "Phi-3-mini-4k-instruct",
+    "family": "phi",
+    "base_ctx": 4096,
+    "file_name": "Phi-3-mini-4k-instruct-q4.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "gguf",
+        "ollama_name": "phi-3-mini"
+      },
+      "llama": {
+        "extra_params": {}
+      }
+    }
+  },
+  {
+    "model_id": "granite4-350m",
+    "display_name": "Granite4 350M",
+    "search_term": "Granite4-350M",
+    "family": "granite",
+    "base_ctx": 1024,
+    "file_name": "Granite4-350M-Q4.gguf",
+    "engines": {
+      "ollama": {
+        "loader": "native",
+        "native_tag": "granite4:350m",
+        "ollama_name": "granite4-350m"
+      },
+      "llama": {
+        "extra_params": {}
+      }
+    }
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "llama": {
+    "template": "{{ if .System }}<|start_header_id|>system<|end_header_id|>\n\n{{ .System }}<|eot_id|>{{ end }}<|start_header_id|>user<|end_header_id|>\n\n{{ .Prompt }}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{{ .Response }}<|eot_id|>",
+    "stops": [
+      "<|eot_id|>",
+      "<|end_of_text|>"
+    ]
+  },
+  "mistral": {
+    "template": "{{ if .System }}{{ .System }}{{ end }}[INST] {{ .Prompt }} [/INST] {{ .Response }}",
+    "stops": [
+      "[/INST]",
+      "</s>"
+    ]
+  },
+  "qwen": {
+    "template": "{{ if .System }}<|im_start|>system\n{{ .System }}<|im_end|>\n{{ end }}<|im_start|>user\n{{ .Prompt }}<|im_end|>\n<|im_start|>assistant\n{{ .Response }}<|im_end|>",
+    "stops": [
+      "<|im_end|>",
+      "<|im_start|>",
+      "<|endoftext|>"
+    ]
+  },
+  "phi": {
+    "template": "{{ if .System }}<|system|>\n{{ .System }}<|end|>\n{{ end }}{{ if .Prompt }}<|user|>\n{{ .Prompt }}<|end|>\n{{ end }}<|assistant|>\n{{ .Response }}<|end|>",
+    "stops": [
+      "<|end|>",
+      "<|user|>",
+      "<|assistant|>"
+    ]
+  },
+  "granite": {
+    "template": "{{ if .System }}<|system|>\n{{ .System }}<|end|>\n{{ end }}{{ if .Prompt }}<|user|>\n{{ .Prompt }}<|end|>\n{{ end }}<|assistant|>\n{{ .Response }}<|end|>",
+    "stops": [
+      "<|end|>",
+      "<|user|>",
+      "<|assistant|>"
+    ]
+  },
+  "gemma": {
+    "template": "{{ if .System }}<start_of_turn>user\n{{ .System }}\n\n{{ .Prompt }}<end_of_turn>\n<start_of_turn>model\n{{ .Response }}<end_of_turn>\n{{ else }}<start_of_turn>user\n{{ .Prompt }}<end_of_turn>\n<start_of_turn>model\n{{ .Response }}<end_of_turn>\n{{ end }}",
+    "stops": [
+      "<end_of_turn>",
+      "<eos>"
+    ]
+  }
+}
