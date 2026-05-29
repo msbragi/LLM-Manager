@@ -4,6 +4,15 @@ A lightweight, modular Bash orchestration suite to manage, start, stop, and moni
 
 Developed primarily to solve the complexity of managing ibrid environments (like Windows hosts from WSL2) and remote deployments via SSH without the overhead of heavy Python or dashboard solutions.
 
+## Prerequisites
+
+Before running the orchestrator, ensure your environment has the following tools installed:
+
+- **Bash** (v4.0 or higher recommended)
+- **`jq`** — Crucial for parsing and formatting JSON outputs (`sudo apt install jq` on Debian/Ubuntu).
+- **`curl`** — Used for engine health checks and API interactions.
+- **PowerShell** (Windows/WSL2 host setups only) — Required strictly for launching/stopping engine services on the Windows host side when managed from WSL2.
+
 ## Key Features
 
 - **Multi-Engine Support:** Native orchestration for `ollama` and `llama.cpp` (with `vLLM` planned).
