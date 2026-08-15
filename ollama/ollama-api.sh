@@ -102,21 +102,35 @@ ollama_execute() {
         
         #log_msg "DEBUG" "PowerShell arguments: ${ps1_args[*]}"
 
-        if [ "$action" = "serve" ]; then
-            powershell.exe "${ps1_args[@]}" >> "$log_file" 2>&1 &
-        else
-            powershell.exe "${ps1_args[@]}" >> "$log_file" 2>&1
-        fi
+	case "$action" in
+	  "stop")
+            	bin_path="$(wslpath -w "$bin_path")"
+                powershell.exe -Command "& '$bin_path' stop" 2>/dev/null
+		;;
+	  "serve")
+          	powershell.exe "${ps1_args[@]}" >> "$log_file" 2>&1 &
+		;;
+	  *)
+          	powershell.exe "${ps1_args[@]}" >> "$log_file" 2>&1
+		;;
+	esac
+
     else
         OLLAMA_HOST="${OLLAMA_BIND}:${OLLAMA_PORT}" 
         OLLAMA_MODELS="$MODELS_ROOT" 
         OLLAMA_KEEP_ALIVE="30m"
         OLLAMA_ORIGINS="*" 
-        if [ "$action" = "serve" ]; then
-            nohup "$bin_path" "$action" "$@" >> "$log_file" 2>&1 &
-        else
-            nohup "$bin_path" "$action" "$@" >> "$log_file" 2>&1
-        fi
+	case "$action" in
+	  "stop")
+            	"$bin_path" "stop" >> "$log_file" 2>&1 
+		;;
+	  "serve")
+            	nohup "$bin_path" "$action" "$@" >> "$log_file" 2>&1 &
+		;;
+	  *)
+            	nohup "$bin_path" "$action" "$@" >> "$log_file" 2>&1
+		;;
+	esac
     fi
 }
 
@@ -142,18 +156,23 @@ ollama_stop() {
         return 0
     fi
     log_msg "INFO" "Stopping Ollama"
-    stop_process "ollama"
+
+    ollama_execute "stop"
     local rc=$?
     
     # Wait a moment for graceful shutdown
     sleep 1
     
+    # Termina il server d'inferenza (llama-server) se il comando stop avesse fallito
+    stop_process "llama-server"
+
     if ollama_running; then
         log_msg "WARN" "Ollama still running, forcing kill"
-        stop_process "ollama"
+	stop_process "ollama"
     fi
     
-    return $rc
+    ollama_running
+    return $? 
 }
 
 # Builds a Modelfile string for the given model_id using engine-models.json and engine-templates.json

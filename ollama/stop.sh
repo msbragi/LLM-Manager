@@ -10,7 +10,7 @@ source "$SCRIPT_DIR/ollama-api.sh"
 ollama_stop
 rc=$?
 
-if [ $rc -ne 0 ]; then
+if [ $rc -eq 0 ]; then
     json_output "error" "stop" "ollama" \
         '{"message":"Failed to stop Ollama"}'
     exit $EXIT_ERROR

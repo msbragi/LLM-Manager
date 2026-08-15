@@ -4,7 +4,7 @@
     "display_name": "Gemma4-2B-Q4_K_M",
     "search_term": "Gemma4-2B",
     "family": "gemma",
-    "base_ctx": 8192,
+    "base_ctx": 16384,
     "file_name": "gemma-4-E2B-it-Q4_K_M.gguf",
     "engines": {
       "ollama": {
