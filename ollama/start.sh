@@ -20,7 +20,7 @@ log_msg "SUCCESS" "Ollama running on port $OLLAMA_PORT"
 # ── Load model (if requested) ─────────────────────────────────────────────────
 
 if [ -n "$MODEL_ID" ]; then
-    "$SCRIPT_DIR/load.sh" "$MODEL_ID"
+    "$SCRIPT_DIR/load.sh" "$MODEL_ID" "${2:-}"
     rc=$?
     if [ $rc -ne 0 ]; then
         json_output "error" "start" "ollama" \

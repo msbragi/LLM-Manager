@@ -125,8 +125,39 @@ fi
 get_api_host() {
     case "$OS_TYPE" in
         "wsl")
-            # Windows host is the default route gateway, not the DNS nameserver
-            ip route show default 2>/dev/null | awk '{print $3; exit}'
+            local use_nat="${WSL_NAT:-}" mode="" gateway=""
+            case "$use_nat" in
+                true|false) ;;
+                "")
+                    mode=$(wslinfo --networking-mode 2>/dev/null) || mode=""
+                    mode=$(printf '%s' "$mode" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+                    case "$mode" in
+                        mirrored) use_nat=false ;;
+                        nat) use_nat=true ;;
+                        *)
+                            log_msg "WARN" "Cannot detect WSL networking mode; falling back to NAT. Set WSL_NAT=true or false in engine.conf to override."
+                            use_nat=true
+                            ;;
+                    esac
+                    ;;
+                *)
+                    log_msg "ERROR" "Invalid WSL_NAT: expected true, false, or empty"
+                    return 1
+                    ;;
+            esac
+
+            if [ "$use_nat" = false ]; then
+                echo "127.0.0.1"
+                return 0
+            fi
+
+            # In NAT mode the Windows host is the IPv4 default gateway.
+            gateway=$(ip -4 route show default 2>/dev/null | awk '{for (i=1; i<NF; i++) if ($i == "via") {print $(i+1); exit}}')
+            if [ -z "$gateway" ]; then
+                log_msg "ERROR" "Cannot determine the Windows host: no IPv4 default gateway found"
+                return 1
+            fi
+            echo "$gateway"
             ;;
         *)
             echo "localhost"

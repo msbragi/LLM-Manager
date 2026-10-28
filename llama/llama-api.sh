@@ -7,7 +7,7 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../engine-common.sh"
 load_config
-API_HOST=$(get_api_host)
+API_HOST=$(get_api_host) || exit "$EXIT_ERROR"
 
 llama_api_call() {
     local endpoint="$1"

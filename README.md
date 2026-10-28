@@ -58,6 +58,7 @@ Copy and tweak your global settings in `engine.conf`:
 
 ```bash
 OS_TYPE="wsl" # "wsl" or "linux"
+WSL_NAT=""   # empty = automatic, "true" = NAT, "false" = mirrored
 BASE_DIR="/mnt/c/LLM/engines"
 
 # Windows directory mandatory for wsl
@@ -67,6 +68,16 @@ MODELS_ROOT="/mnt/c/Models"
 VALID_ENGINES="ollama llama"
 
 ```
+
+With `OS_TYPE="wsl"`, API calls and status checks use the Windows host's IPv4
+default gateway in NAT mode and `127.0.0.1` in mirrored mode. Leave `WSL_NAT`
+empty to detect the active mode using `wslinfo --networking-mode`, or set it to
+`"true"` or `"false"` to force the corresponding mode. If automatic detection is
+unavailable or unrecognized, the manager warns on stderr and falls back to NAT.
+Older configurations without `WSL_NAT` also use automatic detection. An invalid
+value or a missing required gateway causes an error. With `OS_TYPE="linux"`,
+the API host remains `localhost` and `WSL_NAT` is ignored; this also applies to
+engines running inside WSL itself rather than on Windows.
 
 ### 2. Run the Orchestrator
 

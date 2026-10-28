@@ -4,7 +4,7 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../engine-common.sh"
 load_config
-API_HOST=$(get_api_host)
+API_HOST=$(get_api_host) || exit "$EXIT_ERROR"
 
 # Low-level REST call to /api/<endpoint>; returns raw curl output
 ollama_api_call() {
@@ -242,15 +242,21 @@ ollama_pull_model() {
     fi
 }
 
+
+ollama_unload_model() {
+    local payload="{\"model\":\"$1\",\"keep_alive\":0}"
+    ollama_api_call "generate" "POST" "$payload" 
+}
+
 # Main model loading orchestrator: provisions and loads a model into Ollama
 # Accepts either model_id (from manifest) or native_tag as input
 # Returns: 0 on success, EXIT_NOT_FOUND if model not in manifest, EXIT_ERROR on failure
 ollama_load_model() {
-    local model_ref="$1"  # Can be model_id or native_tag
+    local model_ref="$1" # Can be model_id or native_tag
     local users="${2:-1}" # Number of users default to 1
     local model_config=""
 
-    # 1. preload model configuration model_id and consult the manifest
+    # 1. Carica la configurazione del modello dal manifest
     log_msg "INFO" "Load configuration for $model_ref in manifest..."
     model_config=$(get_model_config "$model_ref")
     if [ -z "$model_config" ]; then
@@ -258,21 +264,22 @@ ollama_load_model() {
         return $EXIT_NOT_FOUND
     fi
 
-    # 2. Check if model already exists in registry (by name)
-    log_msg "INFO" "Checking if $model_ref is in Ollama registry..."
-    local all_models; all_models=$(ollama_list_models)
-    if echo "$all_models" | grep -q "\"$model_ref\""; then
-        log_msg "INFO" "Model $model_ref found in registry"
-        ollama_preload_model "$model_ref" "$users" "$model_config"
-        log_msg "SUCCESS" "Model ready: $model_ref"
-        return 0
-    fi
-
+    # Estraiamo i parametri necessari dal JSON
     local loader; loader=$(echo "$model_config" | jq -r '.engines.ollama.loader // "gguf"')
     local ollama_name; ollama_name=$(echo "$model_config" | jq -r '.engines.ollama.ollama_name')
     local native_tag; native_tag=$(echo "$model_config" | jq -r '.engines.ollama.native_tag // ":::NOTFOUND:::"')
 
-    # 3. Provision based on loader type
+    # 2. CONTROLLO DI ESISTENZA UNIVERSALE (Sia per GGUF che per Native)
+    log_msg "INFO" "Checking if $ollama_name is in Ollama registry..."
+    local all_models; all_models=$(ollama_list_models)
+    if echo "$all_models" | grep -q "\"$ollama_name\""; then
+        log_msg "INFO" "Model $ollama_name already found in registry, skipping provision."
+        ollama_preload_model "$ollama_name" "$users" "$model_config"
+        log_msg "SUCCESS" "Model ready: $ollama_name"
+        return 0
+    fi
+
+    # 3. Provisioning (Eseguito SOLO se il modello non è registrato in Ollama)
     log_msg "INFO" "Provisioning model..."
     case "$loader" in
         "gguf")
@@ -296,14 +303,9 @@ ollama_load_model() {
             ;;
     esac
 
-    # 4. Warm up the model into VRAM
+    # 4. Caricamento e riscaldamento del modello in VRAM
     log_msg "INFO" "Warming up model into VRAM..."
     ollama_preload_model "$ollama_name" "$users" "$model_config"
     log_msg "SUCCESS" "Model ready: $ollama_name"
     return 0
-}
-
-ollama_unload_model() {
-    local payload="{\"model\":\"$1\",\"keep_alive\":0}"
-    ollama_api_call "generate" "POST" "$payload" 
 }

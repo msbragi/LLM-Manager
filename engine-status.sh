@@ -25,6 +25,12 @@ load_config
 # ============================================================================
 
 global_status() {
+    local api_host
+    if ! api_host=$(get_api_host); then
+        json_output "error" "status" "all" '{"message":"Cannot resolve API host. Check WSL_NAT and the default gateway."}'
+        return "$EXIT_ERROR"
+    fi
+
     local engines_data="{"
     local first=true
     local active_engine=""
@@ -67,7 +73,6 @@ global_status() {
     # Gather system information using engine-system.sh
     local system_data=$(source "$SCRIPT_DIR/engine-system.sh" && get_system_info)
     # update api_host
-    local api_host=$(get_api_host)
     system_data=$(echo "$system_data" | jq --arg api_host "$api_host" '.api_host = $api_host')
 
     # Build final JSON
