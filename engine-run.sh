@@ -57,6 +57,14 @@ shift 1
 
 echo "→ Action: $ACTION" >&2
 
+if [ "$ACTION" = status ]; then
+    case "$ENGINE" in
+        ""|system|engines)
+            echo "→ Scope: ${ENGINE:-all}" >&2
+            ;;
+    esac
+fi
+
 # Handle special actions that don't require an engine
 case "$ACTION" in
     "config")
@@ -69,11 +77,13 @@ case "$ACTION" in
         exit $?
         ;;
     "status")
-        # If no engine specified, show global status
-        if [ -z "$ENGINE" ]; then
-            bash "$SCRIPT_DIR/engine-status.sh"
-            exit $?
-        fi
+        # Preserve per-engine status; reserved selectors request global sections.
+        case "$ENGINE" in
+            ""|system|engines)
+                bash "$SCRIPT_DIR/engine-status.sh" "${ENGINE:-all}" "$@"
+                exit $?
+                ;;
+        esac
         ;;
 esac
 

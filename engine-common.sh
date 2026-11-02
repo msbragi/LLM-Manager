@@ -192,7 +192,7 @@ find_binary() {
         fi
     done
 
-    log_msg "WARN" "Binary not found: $binary"
+    log_msg "WARN" "Binary not found: $binary. Searched PATH for '$binary' and BASE_DIR='$BASE_DIR' recursively for: ${names[*]}. Check BASE_DIR in engine.conf."
     return 1
 }
 
